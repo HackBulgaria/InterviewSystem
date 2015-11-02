@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block 'page-content' %}
+{% autoescape off %}
+<div class="container">
+  <h1>
+    Next week will start the second stage of the HackBulgaria's Fall 2015 courses campaign - tech interviews!
+  </h1>
+  <h3>
+    Everyone who had applied will receive an email with information & details about the interviews. 
+  </h3>
+  <h3>
+    <b>So check your email! ;)</b>
+  </h3>
+  <h3>
+    Here are our tips for interviews:
+  </h3>
+  <ul>
+    <li>
+    <h4>
+      Make sure you’re rested and ready. 
+    </h4>
+    </li>
+    <li>
+      <h4>Ensure that your internet connection is stable during the Skype interview</h4>
+    </li>
+    <li>
+      <h4>Check your code - we will ask you questions about your solution's implementation</h4>
+    </li>
+    <li>
+      <h4>Keep calm :)</h4>
+    </li>
+    <li>
+      <h4>Manage well your time</h4>  
+    </li>
+  </ul>
+  <div class="image-container">
+    <img src="{% static 'images/quality_education.gif' %}">
+  </div>
+</div>
+{% endautoescape %}
+{% endblock %}

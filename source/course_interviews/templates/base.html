@@ -1,0 +1,69 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HackBulgaria Interviews</title>
+
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}">
+  </head>
+
+  <body>
+  <div id="page-wrap">
+
+    <div id="header">
+
+      <nav class="navbar navbar-default">
+        <div class="navbar-header">
+          <a id="logo" class="navbar-brand" href="https://hackbulgaria.com/">
+            <img alt="Brand" src="{% static 'images/hackbulgaria_logo.png' %}">
+          </a>
+        </div>
+      </nav>
+
+    </div>
+
+    <div id="content">
+    {% block 'page-content' %}
+
+    {% endblock %}
+    </div>
+
+    <div id="footer">
+
+      <div id="socials">
+        <a href="https://github.com/HackBulgaria/" target="_blank">
+          <i class="fa fa-github fa-3x"></i>
+        </a>
+
+        <a href="https://www.facebook.com/HackBulgaria" target="_blank">
+          <i class="fa fa-facebook-square fa-3x"></i>
+        </a>
+
+        <a href="https://www.youtube.com/user/HackBulgaria/feed" target="_blank">
+          <i class="fa fa-youtube-play fa-3x"></i>
+        </a>
+
+        <a href="https://twitter.com/hackbulgaria" target="_blank">
+          <i class="fa fa-twitter fa-3x"></i>
+        </a>
+      </div>
+
+      HackBulgaria. All rights reserved.
+    </div>
+
+  </div>
+  
+  </body>
+  <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/handlebars/handlebars.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/choose_new_interview.js' %}"></script>
+  {% block 'scripts' %}
+
+  {% endblock %}
+</html>

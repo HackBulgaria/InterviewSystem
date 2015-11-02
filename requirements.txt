@@ -1,0 +1,11 @@
+Django==1.8.5
+django-ckeditor==5.0.2
+django-extensions==1.5.7
+django-phonenumber-field==0.7.2
+django-post-office==2.0.3
+django-suit==0.2.15
+jsonfield==1.0.3
+phonenumbers==7.1.0
+requests==2.8.1
+six==1.10.0
+wheel==0.24.0

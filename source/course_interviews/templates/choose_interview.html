@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block 'page-content' %}
+{% autoescape off %}
+<div class="container">
+  <div class="row">
+    <div class="container-fluid">
+
+      <div class="col-md-8 col-md-offset-2">
+        <div class="table-responsive">
+          <table id="interview-slots-table" class="table table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Starting time</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endautoescape %}
+
+<!-- Interview Already Taken Modal  -->
+<div  id="interview-taken" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4>This interview slot has already been selected.</h4>
+        <h4>Please choose another one.</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Selected interview confirmation Modal-->
+<div id="confirm-selected-interview" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Confirm the selected interview slot</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to select this interview slot? If you confirm it, you will <b>NOT</b> be able to select another one.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default confirm-chosen-interview" data-dismiss="modal">Confirm</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Handlebars template-->
+<script id="interview-slots-template" type="text/x-handlebars-template">
+  {% verbatim %}
+    <tr>
+      <td>{{ date }}</td>
+      <td>{{ time }}</td>
+      <td><button type="button" data-slotid="{{ slot_id }}" class="btn btn-primary choose-interview" data-toggle="modal" data-target="#confirm-selected-interview">Select Interview</button></td>
+    </tr>
+  {% endverbatim %}
+</script>
+
+{% endblock %}
+{% block 'scripts' %}
+<script type="text/javascript">
+  (function(){
+    $('.confirm-chosen-interview').click(function(e){
+      $('#confirm-selected-interview').modal('hide');
+
+      $.ajax({
+        type: "POST",
+        url: "/confirm-slot/",
+        data: {
+            'slot_id': window.slotId,
+            'student_uuid': '{{ token }}', 
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+
+        success: function(data) {
+            var token = '{{token}}'
+            $(location).attr("href", "{% url 'course_interviews:confirm_interview' token %} ")
+        },
+
+        error: function(data){
+            $('#interview-taken').modal('show');
+            $('#interview-taken').on('hidden.bs.modal', function () {
+                location.reload();
+            })
+        }
+
+      });
+    });
+  })();
+</script>
+{% endblock %}

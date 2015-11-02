@@ -93,6 +93,7 @@ class Student(models.Model):
         help_text='Коментар на интервюиращия за цялостното представяне на кандидата')
     has_interview_date = models.BooleanField(default=False)
     has_received_email = models.BooleanField(default=False)
+    has_received_new_courses_email = models.BooleanField(default=False)
     has_confirmed_interview = models.BooleanField(default=False)
     has_been_interviewed = models.BooleanField(default=False)
     is_accepted = models.BooleanField(default=False)

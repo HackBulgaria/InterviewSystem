@@ -58,6 +58,7 @@ target/
 
 db.sqlite3
 local_settings.py
+settings.py
 /static/
 media/
 bower_components

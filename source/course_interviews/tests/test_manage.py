@@ -1,7 +1,7 @@
 from course_interviews.models import Student, Teacher, InterviewerFreeTime, InterviewSlot
 from course_interviews.helpers.generate_interview_slots import GenerateInterviewSlots
 from course_interviews.helpers.generate_interviews import GenerateInterviews
-from course_interviews.helpers.generate_confirm_emails import GenerateConfirmEmails
+from course_interviews.helpers.generate_emails import GenerateConfirmEmails
 from post_office.models import EmailTemplate, Email
 from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
@@ -211,7 +211,7 @@ class ManagePyTests(TestCase):
         confirm_email_generator = GenerateConfirmEmails(
             template, confirm_interview_url, choose_interview_url)
 
-        confirm_email_generator.generate_emails()
+        confirm_email_generator.generate_confirmation_emails()
 
         client = Client()
         client.login(
@@ -239,7 +239,7 @@ class ManagePyTests(TestCase):
         confirm_email_generator = GenerateConfirmEmails(
             template, confirm_interview_url, choose_interview_url)
 
-        confirm_email_generator.generate_emails()
+        confirm_email_generator.generate_confirmation_emails()
 
         client = Client()
         client.login(
@@ -271,7 +271,7 @@ class ManagePyTests(TestCase):
         confirm_email_generator = GenerateConfirmEmails(
             template, confirm_interview_url, choose_interview_url)
 
-        confirm_email_generator.generate_emails()
+        confirm_email_generator.generate_confirmation_emails()
 
         client = Client()
         client.login(

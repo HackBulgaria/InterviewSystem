@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound, Http404
 from .models import Student, InterviewSlot
 from .helpers.course_students import CourseStudents
-from .helpers.get_students_emails import GetStudentsEmails
+from .helpers.get_students_emails import GetStudentsEmails, GetAllStudentsEmails
 from .helpers.get_free_interview_slots import get_free_interview_slots
+from interview_communicator.local_settings import (f6s_address, f6s_application_name, f6s_api_key,
+                                                   f6s_page_count, f6s_page)
 
 
 def index(request):
@@ -37,12 +39,6 @@ def get_students(request, course):
 def get_emails(request):
     courses = ["Programming 101 with C#", "Programming 101 with Java"]
 
-    f6s_address = "https://api.f6s.com/"
-    f6s_application_name = "hackbulgaria-courses-fall2015"
-    f6s_api_key = "g3WHBM4UYv"
-    f6s_page_count = 100
-    f6s_page = 1
-
     get_students_emails_generator = GetStudentsEmails(
         f6s_address, f6s_application_name, f6s_api_key, f6s_page_count, f6s_page, courses)
 
@@ -50,6 +46,22 @@ def get_emails(request):
     json = get_students_emails_generator.get_json()
 
     return JsonResponse(json)
+
+
+def get_all_emails(request):
+    courses = ["Programming 101 with C#", "Programming 101 with Java"]
+
+    get_students_emails_generator = GetAllStudentsEmails(
+        f6s_address, f6s_application_name, f6s_api_key, f6s_page_count, f6s_page, courses)
+
+    get_students_emails_generator.generate_students_emails()
+    json = get_students_emails_generator.get_json()
+
+    result = ""
+    for name in json["students"]:
+        result += name + ", "
+
+    return JsonResponse(result[:-2], safe=False)
 
 
 # Function serving the interview slots to HandleBars
@@ -91,27 +103,34 @@ def choose_interview(request, token):
 
 
 def confirm_slot(request):
-    slot_id = request.POST["slot_id"]
-    student_uuid = request.POST["student_uuid"]
+    if request.POST:
+        slot_id = request.POST["slot_id"]
+        student_uuid = request.POST["student_uuid"]
 
-    slot = get_object_or_404(InterviewSlot, id=slot_id)
-    student = get_object_or_404(Student, uuid=student_uuid)
+        slot = get_object_or_404(InterviewSlot, id=slot_id)
+        student = get_object_or_404(Student, uuid=student_uuid)
 
-    if slot.student:
-        return HttpResponseNotFound("The interview slot is already taken!")
+        if slot.student:
+            return HttpResponseNotFound(
+                "This interview slot is already taken! Please select another one")
 
-    # The auto generated slot the student already has should become free
-    try:
-        vacate_slot = InterviewSlot.objects.get(student=student)
-        vacate_slot.student = None
-        vacate_slot.save()
-    except:
-        pass
+        if student.has_confirmed_interview:
+            return HttpResponseNotFound(
+                "You already confirmed your interview. You can't choose another one.")
 
-    slot.student = student
-    student.has_interview_date = True
+        # The auto generated slot the student already has should become free
+        try:
+            vacate_slot = InterviewSlot.objects.get(student=student)
+            vacate_slot.student = None
+            vacate_slot.save()
+        except:
+            pass
 
-    slot.save()
-    student.save()
+        slot.student = student
+        student.has_interview_date = True
+        student.has_confirmed_interview = True
 
-    return HttpResponse("OK")
+        slot.save()
+        student.save()
+
+        return HttpResponse("OK")

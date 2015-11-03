@@ -29,9 +29,18 @@ STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media/')
 
+confirm_interview_url = ""
+choose_interview_url = ""
+
 EMAIL_USE_TLS = True
 EMAIL_HOST = ''
 EMAIL_PORT = 123
 EMAIL_HOST_USER = 'hackbulgaria@gmail.com'
 EMAIL_HOST_PASSWORD = ''
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+f6s_address = "https://api.f6s.com/"
+f6s_application_name = ""
+f6s_api_key = ""
+f6s_page_count = 100
+f6s_page = 1

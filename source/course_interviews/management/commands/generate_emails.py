@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from course_interviews.helpers.generate_emails import GenerateConfirmEmails, GenerateNewCoursesEmails
+from interview_communicator.local_settings import confirm_interview_url, choose_interview_url
 
 
 class Command(BaseCommand):
@@ -12,9 +13,6 @@ class Command(BaseCommand):
         # email_generator.generate_new_courses_emails()
 
         template = 'interview_confirmation'
-        # URLs for confirming/choosing courses
-        confirm_interview_url = "http://localhost:8000/confirm-interview/"
-        choose_interview_url = "http://localhost:8000/choose-interview/"
 
         email_generator = GenerateConfirmEmails(
             template, confirm_interview_url, choose_interview_url)

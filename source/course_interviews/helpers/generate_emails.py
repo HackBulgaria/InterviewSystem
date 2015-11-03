@@ -6,14 +6,14 @@ class GenerateNewCoursesEmails:
 
     def __init__(self, template):
         self.template = template
-        self.__generated_emails = 0
-        self.__errors = 0
+        self.generated_emails = 0
+        self.errors = 0
 
-    def __inc_errors(self):
-        self.__errors += 1
+    def inc_errors(self):
+        self.errors += 1
 
-    def __inc_generated_emails(self):
-        self.__generated_emails += 1
+    def inc_generated_emails(self):
+        self.generated_emails += 1
 
     def generate_new_courses_emails(self):
         # Emails are gona be send to all applicants that applied successfully
@@ -28,21 +28,21 @@ class GenerateNewCoursesEmails:
                     'name': student.name,
                 })
             try:
-                self.__inc_generated_emails()
+                self.inc_generated_emails()
                 student.has_received_new_courses_email = True
                 student.save()
             except Exception as e:
-                self.__inc_errors()
+                self.inc_errors()
                 student.has_received_new_courses_email = False
                 student.save()
                 print(e)
                 pass
 
     def get_generated_emails(self):
-        return self.__generated_emails - self.__errors
+        return self.generated_emails - self.errors
 
     def get_errors(self):
-        return self.__errors
+        return self.errors
 
     def get_students_with_generated_emails(self):
         return len(Student.objects.filter(has_received_new_courses_email=True))
@@ -72,27 +72,21 @@ class GenerateConfirmEmails(GenerateNewCoursesEmails):
                 context={
                     'name': student.name,
                     'applied_course': student.applied_course,
+                    'skype': student.interviewslot.teacher_time_slot.teacher.skype,
                     'interview_date': student.interviewslot.teacher_time_slot.date,
                     'interview_start_time': student.interviewslot.start_time,
                     'confirm_interview_url': self.confirm_interview_url + student.uuid,
                     'choose_interview_url': self.choose_interview_url + student.uuid,
                 })
-            try:
-                self.__inc_generated_emails()
-                student.has_received_email = True
-                student.save()
-            except Exception as e:
-                self.__inc_errors()
-                student.has_received_email = False
-                student.save()
-                print(e)
-                pass
+            self.inc_generated_emails()
+            student.has_received_email = True
+            student.save()
 
     def get_generated_emails(self):
-        return self.__generated_emails - self.__errors
+        return self.generated_emails - self.errors
 
     def get_errors(self):
-        return self.__errors
+        return self.errors
 
     def get_students_with_generated_emails(self):
         return len(Student.objects.filter(has_received_email=True))

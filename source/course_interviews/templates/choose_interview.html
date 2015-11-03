@@ -35,8 +35,11 @@
 
     <div class="modal-content">
       <div class="modal-body">
-        <h4>This interview slot has already been selected.</h4>
-        <h4>Please choose another one.</h4>
+        <h4>
+          <span id="errors">
+            
+          </span>
+        </h4>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -89,21 +92,22 @@
         type: "POST",
         url: "/confirm-slot/",
         data: {
-            'slot_id': window.slotId,
-            'student_uuid': '{{ token }}', 
-            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          'slot_id': window.slotId,
+          'student_uuid': '{{ token }}', 
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
 
         success: function(data) {
-            var token = '{{token}}'
-            $(location).attr("href", "{% url 'course_interviews:confirm_interview' token %} ")
+          var token = '{{token}}'
+          $(location).attr("href", "{% url 'course_interviews:confirm_interview' token %} ")
         },
 
         error: function(data){
-            $('#interview-taken').modal('show');
-            $('#interview-taken').on('hidden.bs.modal', function () {
-                location.reload();
-            })
+          $('#errors').text(data.responseText)
+          $('#interview-taken').modal('show');
+          $('#interview-taken').on('hidden.bs.modal', function () {
+              location.reload();
+          })
         }
 
       });

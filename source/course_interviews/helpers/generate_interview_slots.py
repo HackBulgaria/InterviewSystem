@@ -35,17 +35,15 @@ class GenerateInterviewSlots:
 
             while free_time >= self.interview_time_length:
                 if slot.buffer_time:
-                    interview_slot = InterviewSlot(
+                    InterviewSlot.objects.create(
                         teacher_time_slot=slot,
                         start_time=interview_start_time,
                         buffer_slot=True)
-                    interview_slot.save()
                 else:
-                    interview_slot = InterviewSlot(
+                    InterviewSlot.objects.create(
                         teacher_time_slot=slot,
                         start_time=interview_start_time,
                         buffer_slot=False)
-                    interview_slot.save()
 
                 self.__inc_slots_generated()
 

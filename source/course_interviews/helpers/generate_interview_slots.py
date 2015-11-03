@@ -43,7 +43,8 @@ class GenerateInterviewSlots:
                 else:
                     interview_slot = InterviewSlot(
                         teacher_time_slot=slot,
-                        start_time=interview_start_time)
+                        start_time=interview_start_time,
+                        buffer_slot=False)
                     interview_slot.save()
 
                 self.__inc_slots_generated()

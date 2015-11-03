@@ -14,7 +14,7 @@ class GenerateInterviews:
         students = list(Student.objects.all())
         slots = InterviewSlot.objects.all()
         for slot in slots:
-            if slot.student:
+            if slot.student or slot.buffer_slot:
                 continue
             while len(students) != 0:
                 student = students.pop(0)

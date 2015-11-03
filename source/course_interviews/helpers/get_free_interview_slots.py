@@ -7,13 +7,8 @@ def get_free_interview_slots():
     # students that can not attend their initial interview date
 
     # Buffer days
-    friday = datetime(2015, 11, 12)
-    saturday = datetime(2015, 11, 13)
-
-    buffer_slots = list(InterviewSlot.objects.all().filter(
-        teacher_time_slot__date=datetime.date(friday)).order_by('teacher_time_slot__date'))
-    buffer_slots += list(InterviewSlot.objects.all().filter(
-        teacher_time_slot__date=datetime.date(saturday)).order_by('teacher_time_slot__date'))
+    buffer_slots = InterviewSlot.objects.all().filter(
+      buffer_slot=True).order_by('teacher_time_slot__date')
 
     available_slots = [slot for slot
                        in buffer_slots

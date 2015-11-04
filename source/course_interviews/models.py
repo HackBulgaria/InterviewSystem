@@ -121,6 +121,6 @@ class InterviewerFreeTime(models.Model):
 
 class InterviewSlot(models.Model):
     teacher_time_slot = models.ForeignKey(InterviewerFreeTime)
-    student = models.OneToOneField(Student, null=True)
+    student = models.OneToOneField(Student, null=True, blank=True)
     start_time = models.TimeField(blank=False, null=True)
     buffer_slot = models.BooleanField(default=False)

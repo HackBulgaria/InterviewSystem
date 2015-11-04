@@ -138,6 +138,56 @@ class ManagePyGenerateSlotsTests(TestCase):
 
         self.assertCountEqual(result_list_before_slot_generation, result_list_after_slot_generation)
 
+    def test_generated_interviews_proper_length(self):
+        self.test_teacher_user = Teacher.objects.create_user(
+            "testuser@user.com", "123", skype="testuser_user")
+
+        self.test_teacher_user.first_name = "Test"
+        self.test_teacher_user.last_name = "Testov"
+        self.test_teacher_user.is_staff = True
+        self.test_teacher_user.groups.add(self.teacher_group)
+        self.test_teacher_user.save()
+
+        interview_length = 20
+        break_between_interviews = 10
+        interview_slots_generator = GenerateInterviewSlots(
+            interview_length, break_between_interviews)
+
+        time_slot1 = InterviewerFreeTime.objects.create(
+            teacher=self.test_teacher_user,
+            date=str(self.tomorrow),
+            start_time="15:00",
+            end_time="15:15")
+
+        # Not enough time for an interview, no slots should be generated
+        interview_slots_generator.generate_interview_slots()
+        slots = InterviewSlot.objects.all().filter(teacher_time_slot=time_slot1).count()
+
+        self.assertEqual(slots, 0)
+
+        time_slot2 = InterviewerFreeTime.objects.create(
+            teacher=self.test_teacher_user,
+            date=str(self.tomorrow),
+            start_time="15:00",
+            end_time="15:20")
+
+        # Generate one interview slot
+        interview_slots_generator.generate_interview_slots()
+        slots = InterviewSlot.objects.all().filter(teacher_time_slot=time_slot2).count()
+
+        self.assertEqual(slots, 1)
+
+        time_slot3 = InterviewerFreeTime.objects.create(
+            teacher=self.test_teacher_user,
+            date=str(self.tomorrow),
+            start_time="15:00",
+            end_time="17:00")
+        # Generate 4 more interview slots
+        interview_slots_generator.generate_interview_slots()
+        slots = InterviewSlot.objects.all().filter(teacher_time_slot=time_slot3).count()
+
+        self.assertEqual(slots, 4)
+
     def test_generate_slots_for_buffer_teacher_free_time(self):
         InterviewerFreeTime.objects.create(
             teacher=self.teacher_user2,

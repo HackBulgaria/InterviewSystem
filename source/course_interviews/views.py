@@ -41,7 +41,12 @@ def get_students(request, course):
 # Function for the emails of all applicants that left email in their F6S application,
 # but did not yet submit their tasks - we are gona send them a reminder email for submition
 def get_emails(request):
-    courses = ["Programming 101 with C#", "Programming 101 with Java"]
+    courses = [
+        "Programming 101 with C#",
+        "Programming 101 with Java",
+        "Programming 101 with Ruby",
+        "Proggraming 101 with Python"
+    ]
 
     get_students_emails_generator = GetStudentsEmails(
         f6s_address, f6s_application_name, f6s_api_key, f6s_page_count, f6s_page, courses)
@@ -52,8 +57,9 @@ def get_emails(request):
     return JsonResponse(json)
 
 
+# Function for all of the emails given in the F6S form
 def get_all_emails(request):
-    courses = ["Programming 101 with C#", "Programming 101 with Java"]
+    courses = []  # Get all courses
 
     get_students_emails_generator = GetAllStudentsEmails(
         f6s_address, f6s_application_name, f6s_api_key, f6s_page_count, f6s_page, courses)
@@ -68,7 +74,7 @@ def get_all_emails(request):
     return JsonResponse(result[:-2], safe=False)
 
 
-# Function serving the interview slots to HandleBars
+# Function serving interview slots to HandleBars
 def get_interview_slots(request):
     json = []
     available_slots = get_free_interview_slots()
@@ -83,6 +89,7 @@ def get_interview_slots(request):
     return JsonResponse(json, safe=False)
 
 
+# TODO: Should't post data with get request
 def confirm_interview(request, token):
     student = get_object_or_404(Student, uuid=token)
 
@@ -122,7 +129,7 @@ def confirm_slot(request):
             return HttpResponseNotFound(
                 "You already confirmed your interview. You can't choose another one.")
 
-        # The auto generated slot the student already has should become free
+        # The auto generated slot student already has should become free
         try:
             vacate_slot = InterviewSlot.objects.get(student=student)
             vacate_slot.student = None

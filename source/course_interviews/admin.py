@@ -133,7 +133,7 @@ class InterviewerFreeTimeAdmin(admin.ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         self.exclude = []
         if not request.user.is_superuser:
-            self.exclude = ['teacher']
+            self.exclude = ['teacher', 'buffer_time']
         return super().get_form(request, obj, **kwargs)
 
     def save_model(self, request, obj, form, change):
@@ -147,11 +147,17 @@ class InterviewerFreeTimeAdmin(admin.ModelAdmin):
             return queryset
         return queryset.filter(teacher=request.user)
 
+    def get_generated_slots(self, obj):
+        return obj.has_generated_slots()
+    get_generated_slots.short_description = "Has generated slots"
+    get_generated_slots.boolean = True
+
     list_display = [
         "teacher",
         "date",
         "start_time",
-        "end_time"
+        "end_time",
+        'get_generated_slots'
     ]
     list_filter = ["date", "start_time", "end_time"]
     search_fields = ["teacher"]

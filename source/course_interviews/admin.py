@@ -215,6 +215,10 @@ class InterviewSlotAdmin(admin.ModelAdmin):
     get_student_has_been_interviewed.short_description = "Has been interviewed"
     get_student_has_been_interviewed.boolean = True
 
+    def get_teacher_skype(self, obj):
+        return obj.teacher_time_slot.teacher.skype
+    get_teacher_skype.short_description = "Teacher Skype"
+
     list_display = [
         'get_date',
         'get_start_time',
@@ -222,6 +226,7 @@ class InterviewSlotAdmin(admin.ModelAdmin):
         'get_student_confirmation',
         'get_student_has_been_interviewed',
         'get_teacher',
+        'get_teacher_skype'
     ]
     ordering = ['teacher_time_slot__date', 'start_time']
 

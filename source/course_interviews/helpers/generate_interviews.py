@@ -16,7 +16,6 @@ class GenerateInterviews:
         slots = InterviewSlot.objects.all()
         today = datetime.now()
         for slot in slots:
-            print()
             if slot.student or slot.buffer_slot or slot.teacher_time_slot.date < datetime.date(today):
                 continue
             while len(students) != 0:

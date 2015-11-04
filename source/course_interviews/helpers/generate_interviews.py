@@ -1,4 +1,5 @@
 from course_interviews.models import Student, InterviewSlot
+from datetime import datetime
 
 
 class GenerateInterviews:
@@ -13,8 +14,10 @@ class GenerateInterviews:
     def generate_interviews(self):
         students = list(Student.objects.all())
         slots = InterviewSlot.objects.all()
+        today = datetime.now()
         for slot in slots:
-            if slot.student or slot.buffer_slot:
+            print()
+            if slot.student or slot.buffer_slot or slot.teacher_time_slot.date < datetime.date(today):
                 continue
             while len(students) != 0:
                 student = students.pop(0)
@@ -27,7 +30,6 @@ class GenerateInterviews:
                     break
 
     def get_students_without_interviews(self):
-        # return self.__students_without_interviews
         count = 0
         all_students = Student.objects.all()
 

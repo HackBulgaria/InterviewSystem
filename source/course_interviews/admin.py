@@ -225,6 +225,12 @@ class InterviewSlotAdmin(admin.ModelAdmin):
         return
     get_student_skype.short_description = "Student Skype"
 
+    def get_student_course(self, obj):
+        if obj.student_id:
+            return obj.student.applied_course
+        return
+    get_student_course.short_description = "Applying for"
+
     list_display = [
         'get_date',
         'get_start_time',
@@ -232,6 +238,7 @@ class InterviewSlotAdmin(admin.ModelAdmin):
         'get_student_skype',
         'get_teacher',
         'get_teacher_skype',
+        'get_student_course',
         'get_student_confirmation',
         'get_student_has_been_interviewed',
     ]

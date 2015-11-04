@@ -220,7 +220,9 @@ class InterviewSlotAdmin(admin.ModelAdmin):
     get_teacher_skype.short_description = "Teacher Skype"
 
     def get_student_skype(self, obj):
-        return obj.student.skype
+        if obj.student_id:
+            return obj.student.skype
+        return
     get_student_skype.short_description = "Student Skype"
 
     list_display = [

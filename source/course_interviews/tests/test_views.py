@@ -1,8 +1,8 @@
 from course_interviews.models import Student, Teacher, InterviewerFreeTime, InterviewSlot
-
 from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from datetime import date, timedelta
 
 
 class ViewsTests(TestCase):
@@ -46,15 +46,17 @@ class ViewsTests(TestCase):
         self.teacher_user2.groups.add(self.teacher_group)
         self.teacher_user2.save()
 
+        self.tomorrow = date.today() + timedelta(days=1)
+
         self.teacher_free_time1 = InterviewerFreeTime.objects.create(
             teacher=self.teacher_user1,
-            date="2016-10-30",
+            date=str(self.tomorrow),
             start_time="15:00",
             end_time="16:00")
 
         self.teacher_free_time2 = InterviewerFreeTime.objects.create(
             teacher=self.teacher_user2,
-            date="2016-10-31",
+            date=str(self.tomorrow),
             start_time="16:00",
             end_time="17:00")
 

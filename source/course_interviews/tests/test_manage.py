@@ -2,7 +2,7 @@ from course_interviews.models import Student, Teacher, InterviewerFreeTime, Inte
 from course_interviews.helpers.generate_interview_slots import GenerateInterviewSlots
 from course_interviews.helpers.generate_interviews import GenerateInterviews
 from course_interviews.helpers.generate_emails import GenerateConfirmEmails
-from post_office.models import EmailTemplate, Email
+from post_office.models import EmailTemplate
 from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
@@ -137,6 +137,42 @@ class ManagePyGenerateSlotsTests(TestCase):
         result_list_after_slot_generation = response.context_data['cl'].result_list
 
         self.assertCountEqual(result_list_before_slot_generation, result_list_after_slot_generation)
+
+    def test_generate_slots_for_buffer_teacher_free_time(self):
+        InterviewerFreeTime.objects.create(
+            teacher=self.teacher_user2,
+            date=str(self.tomorrow),
+            start_time="16:00",
+            end_time="17:00",
+            buffer_time=True)
+
+        interview_length = 20
+        break_between_interviews = 10
+
+        interview_slots_generator = GenerateInterviewSlots(
+            interview_length, break_between_interviews)
+        interview_slots_generator.generate_interview_slots()
+
+        buffer_slot = InterviewSlot.objects.latest('id')
+        self.assertEqual(buffer_slot.buffer_slot, True)
+
+    def test_generate_slots_for_non_buffer_teacher_free_time(self):
+        InterviewerFreeTime.objects.create(
+            teacher=self.teacher_user2,
+            date=str(self.tomorrow),
+            start_time="16:00",
+            end_time="17:00",
+            buffer_time=False)
+
+        interview_length = 20
+        break_between_interviews = 10
+
+        interview_slots_generator = GenerateInterviewSlots(
+            interview_length, break_between_interviews)
+        interview_slots_generator.generate_interview_slots()
+
+        buffer_slot = InterviewSlot.objects.latest('id')
+        self.assertEqual(buffer_slot.buffer_slot, False)
 
 
 class ManagePyGenerateInterviewsTests(TestCase):
@@ -289,6 +325,45 @@ class ManagePyGenerateInterviewsTests(TestCase):
         tomorrow_slot = tomorrow_slot[0]
 
         self.assertEqual(yesterday_slot.student, None)
+        self.assertEqual(tomorrow_slot.student, self.student1)
+
+    def test_generate_interview_for_slot_date_that_is_today(self):
+        """
+        Interviews for slots with date equal to today should not be generated
+        """
+        # Create time slot for today
+        today = date.today()
+        InterviewerFreeTime.objects.create(
+            teacher=self.teacher_user1,
+            date=str(today),
+            start_time="15:00",
+            end_time="15:30")
+
+        # Create valid time slot
+        tomorrow = date.today() + timedelta(days=1)
+        InterviewerFreeTime.objects.create(
+            teacher=self.teacher_user1,
+            date=str(tomorrow),
+            start_time="15:00",
+            end_time="15:30")
+
+        interview_length = 20
+        break_between_interviews = 10
+
+        interview_slots_generator = GenerateInterviewSlots(
+            interview_length, break_between_interviews)
+        interview_slots_generator.generate_interview_slots()
+
+        interview_generator = GenerateInterviews()
+        interview_generator.generate_interviews()
+
+        today_slot = InterviewSlot.objects.all().filter(teacher_time_slot__date=today)
+        today_slot = today_slot[0]
+
+        tomorrow_slot = InterviewSlot.objects.all().filter(teacher_time_slot__date=tomorrow)
+        tomorrow_slot = tomorrow_slot[0]
+
+        self.assertEqual(today_slot.student, None)
         self.assertEqual(tomorrow_slot.student, self.student1)
 
 

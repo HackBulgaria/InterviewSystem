@@ -1,8 +1,8 @@
 from course_interviews.models import Student, Teacher, InterviewerFreeTime, InterviewSlot
-
 from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
+from datetime import date, timedelta
 
 
 class AdminPanelTests(TestCase):
@@ -37,9 +37,11 @@ class AdminPanelTests(TestCase):
         self.teacher_user1.groups.add(self.teacher_group)
         self.teacher_user1.save()
 
+        self.tomorrow = date.today() + timedelta(days=1)
+
         self.teacher_free_time1 = InterviewerFreeTime.objects.create(
             teacher=self.teacher_user1,
-            date="2016-10-30",
+            date=str(self.tomorrow),
             start_time="15:00",
             end_time="16:00")
 
@@ -77,8 +79,9 @@ class AdminPanelTests(TestCase):
             email=self.teacher_user1.email,
             password='123'
         )
+
         data = {
-            'date': '2016-10-31',
+            'date': str(self.tomorrow),
             'start_time': '18:00',
             'end_time': '19:00'
         }

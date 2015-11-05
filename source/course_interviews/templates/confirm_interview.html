@@ -17,4 +17,43 @@
 
 </div>
 {% endautoescape %}
+<!-- Student doesn't have interview date Modal -->
+<div  id="no-interview" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4>
+            You can't confirm your interview, because you do NOT have an interview date
+        </h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block 'scripts' %}
+<script type="text/javascript">
+  (function(){
+      $.ajax({
+        type: "POST",
+        url: "{% url 'course_interviews:confirm_student_interview' %}",
+        data: {
+          'token': '{{ token }}',
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+
+        error: function(data){
+          $('#no-interview').modal('show');
+          $('#no-interview').on('hidden.bs.modal', function () {
+              $(location).attr("href", "{% url 'course_interviews:choose_interview' token %} ")
+          })
+        }
+
+      });
+  })();
+</script>
 {% endblock %}

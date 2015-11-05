@@ -30,6 +30,10 @@ body #content {
     padding-bottom: 100px;
 }
 
+body #content .choose-interview-container h2{
+    text-align: center;
+}
+
 body #footer {
     background: #F7931E;
     color: white;

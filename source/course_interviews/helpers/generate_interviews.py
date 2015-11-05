@@ -29,17 +29,7 @@ class GenerateInterviews:
                     break
 
     def get_students_without_interviews(self):
-        count = 0
-        all_students = Student.objects.all()
-
-        for student in all_students:
-            try:
-                student.interviewslot
-            except:
-                count += 1
-                pass
-
-        return count
+        return Student.objects.all().filter(interviewslot__isnull=True).count()
 
     def get_generated_interviews_count(self):
         return self.__generated_interviews

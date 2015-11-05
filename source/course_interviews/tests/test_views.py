@@ -84,27 +84,6 @@ class ViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_confirm_interview_without_interview_date(self):
-        """
-        Student without interview date should not be able to acces confirm_interview page
-        """
-        url = reverse('course_interviews:confirm_interview', args=(self.student1.uuid, ))
-        response = self.client.get(url, follow=True)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_has_confirmed_interview_date_after_confirming_interview(self):
-        """
-        After confirming the interview, the student should have has_confirmed_interview = True
-        """
-        self.student1.has_interview_date = True
-        self.student1.save()
-        url = reverse('course_interviews:confirm_interview', args=(self.student1.uuid, ))
-        response = self.client.get(url, follow=True)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(Student.objects.get(id=self.student1.id).has_confirmed_interview, True)
-
     def test_choose_interview_for_student_with_confirmed_interview(self):
         """
         Student with confirmed interview should not be able to select another interview

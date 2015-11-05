@@ -1,4 +1,5 @@
 from course_interviews.models import Student, Teacher, InterviewerFreeTime, InterviewSlot
+from course_interviews.helpers.generate_interview_slots import GenerateInterviewSlots
 from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.test import TestCase, Client
@@ -126,3 +127,47 @@ class AdminPanelTests(TestCase):
         change_list = InterviewSlot.objects.all().filter(teacher_time_slot=self.teacher_free_time1)
 
         self.assertCountEqual(change_list, result_list)
+
+    def test_change_permissions_interviewer_free_time_after_slots_are_generated(self):
+        """
+        teacher should not be able to delete his interview_free_time if slots
+        for that time are already generated - no interviews are gona be unanswered
+        if he can not attend some interview, he has to tell us
+        """
+        test_teacher_user = Teacher.objects.create_user(
+            "testuser@user.com", "123", skype="testuser_user")
+
+        test_teacher_user.first_name = "Test"
+        test_teacher_user.last_name = "Testov"
+        test_teacher_user.is_staff = True
+        test_teacher_user.groups.add(self.teacher_group)
+        test_teacher_user.save()
+
+        interview_length = 20
+        break_between_interviews = 10
+        interview_slots_generator = GenerateInterviewSlots(
+            interview_length, break_between_interviews)
+
+        time_slot = InterviewerFreeTime.objects.create(
+            teacher=test_teacher_user,
+            date=str(self.tomorrow),
+            start_time="15:00",
+            end_time="15:30")
+
+        interview_slots_generator.generate_interview_slots()
+
+        client = Client()
+        client.login(
+            email=test_teacher_user.email,
+            password='123'
+        )
+
+        url = reverse('admin:course_interviews_interviewerfreetime_change',
+                      args=(time_slot.id, ))
+
+        data = {
+            "buffer_time": True
+        }
+
+        response = client.post(url, data, follow=True)
+        self.assertEqual(response.status_code, 403)

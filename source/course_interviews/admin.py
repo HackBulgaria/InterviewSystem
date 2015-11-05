@@ -130,6 +130,11 @@ admin.site.register(Student, StudentAdmin)
 class InterviewerFreeTimeAdmin(admin.ModelAdmin):
     model = InterviewerFreeTime
 
+    def has_change_permission(self, request, obj=None):
+        if obj and request.POST and not request.user.is_superuser and obj.has_generated_slots():
+            return False
+        return super().has_change_permission(request, obj)
+
     def get_form(self, request, obj=None, **kwargs):
         self.exclude = []
         if not request.user.is_superuser:

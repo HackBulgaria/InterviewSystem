@@ -9,6 +9,8 @@ def index(request):
 
 
 def confirm_interview(request, token):
+    student = get_object_or_404(Student, uuid=token)
+
     return render(request, "confirm_interview.html", locals())
 
 

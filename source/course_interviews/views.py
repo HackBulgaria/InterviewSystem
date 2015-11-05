@@ -45,7 +45,7 @@ def get_emails(request):
         "Programming 101 with C#",
         "Programming 101 with Java",
         "Programming 101 with Ruby",
-        "Proggraming 101 with Python"
+        "Programming 101 with Python"
     ]
 
     get_students_emails_generator = GetStudentsEmails(

@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.contrib.admin.views.decorators import staff_member_required
+from rest_framework import generics
+from .serializers import InterviewSlotSerializer
 from .models import Student, InterviewSlot
 from .helpers.course_students import CourseStudents
 from .helpers.get_students_emails import GetStudentsEmails, GetAllStudentsEmails
@@ -77,6 +79,11 @@ def get_interview_slots(request):
             })
 
     return JsonResponse(json, safe=False)
+
+
+class GetInterviewSlots(generics.ListCreateAPIView):
+    queryset = get_free_interview_slots()
+    serializer_class = InterviewSlotSerializer
 
 
 def confirm_student_interview(request):

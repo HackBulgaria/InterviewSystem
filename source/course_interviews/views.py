@@ -10,7 +10,7 @@ def index(request):
 
 def confirm_interview(request, token):
     student = get_object_or_404(Student, uuid=token)
-    teacher = student.interviewslot.teacher_time_slot.teacher
+    teacher_skype = student.interviewslot.teacher_time_slot.teacher.skype
 
     return render(request, "confirm_interview.html", locals())
 

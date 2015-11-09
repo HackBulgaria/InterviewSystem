@@ -1,8 +1,8 @@
 [report]
 omit = 
-    */migrations/*
-    */tests.py
-    */__init__.py
+    source/*/migrations/*
+    source/*/tests.py
+    source/*/__init__.py
     source/manage.py
     source/wsgi.py
     source/example_local_settings.py

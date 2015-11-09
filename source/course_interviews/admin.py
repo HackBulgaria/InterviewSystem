@@ -1,18 +1,14 @@
+from .helpers.generate_interview_slots import GenerateInterviewSlots
+from .helpers.generate_interviews import GenerateInterviews
+from .helpers.generate_emails import GenerateConfirmEmails
+from interview_communicator.local_settings import confirm_interview_url, choose_interview_url
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django import forms
-from .models import Student, Teacher, InterviewerFreeTime, InterviewSlot
-
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect, HttpResponseForbidden
-from django.conf.urls import patterns, include, url
-
-from .helpers.generate_interview_slots import GenerateInterviewSlots
-from .helpers.generate_interviews import GenerateInterviews
-from .helpers.generate_emails import GenerateConfirmEmails, GenerateNewCoursesEmails
-from interview_communicator.local_settings import confirm_interview_url, choose_interview_url
+from django.conf.urls import patterns, url
+from .models import Student, Teacher, InterviewerFreeTime, InterviewSlot
 
 
 class UserCreationForm(forms.ModelForm):

@@ -4,6 +4,16 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django import forms
 from .models import Student, Teacher, InterviewerFreeTime, InterviewSlot
 
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.conf.urls import patterns, include, url
+
+from .helpers.generate_interview_slots import GenerateInterviewSlots
+from .helpers.generate_interviews import GenerateInterviews
+from .helpers.generate_emails import GenerateConfirmEmails, GenerateNewCoursesEmails
+from interview_communicator.local_settings import confirm_interview_url, choose_interview_url
+
 
 class UserCreationForm(forms.ModelForm):
 
@@ -172,6 +182,89 @@ admin.site.register(InterviewerFreeTime, InterviewerFreeTimeAdmin)
 
 
 class InterviewSlotAdmin(admin.ModelAdmin):
+
+    # Generate interview slots using the free time of the teachers(interviewers)
+
+    def generate_slots(self, request):
+        if request.user.is_superuser:
+            interview_length = 20
+            break_between_interviews = 10
+
+            interview_slots_generator = GenerateInterviewSlots(
+                interview_length, break_between_interviews)
+
+            interview_slots_generator.generate_interview_slots()
+            generated_slots = interview_slots_generator.get_generated_slots()
+
+            self.message_user(
+                request, "%s slots were generated"
+                % generated_slots)
+
+            return HttpResponseRedirect(request.META["HTTP_REFERER"])
+        else:
+            return HttpResponseForbidden()
+
+    # Generate interviews using the free slots and the students without interviews
+    def generate_interviews(self, request):
+        if request.user.is_superuser:
+            interview_generator = GenerateInterviews()
+            interview_generator.generate_interviews()
+
+            generated_interviews = interview_generator.get_generated_interviews_count()
+            students_without_interviews = interview_generator.get_students_without_interviews()
+
+            self.message_user(
+                request, "%s interviews were generated"
+                % generated_interviews)
+            self.message_user(
+                request, "%s students do not have interview date"
+                % students_without_interviews)
+
+            return HttpResponseRedirect(request.META["HTTP_REFERER"])
+        else:
+            return HttpResponseForbidden()
+
+    # Generate emails for interview date confirmation
+    def generate_emails(self, request):
+        if request.user.is_superuser:
+            # Generate emails for the new courses
+            # template = 'new_courses'
+            # email_generator = GenerateNewCoursesEmails(template)
+            # email_generator.generate_new_courses_emails()
+
+            template = 'interview_confirmation'
+
+            email_generator = GenerateConfirmEmails(
+                template, confirm_interview_url, choose_interview_url)
+
+            email_generator.generate_confirmation_emails()
+
+            generated_emails = email_generator.get_generated_emails()
+            students_with_emails = email_generator.get_students_with_generated_emails()
+            students_without_emails = email_generator.get_students_without_generated_emails()
+
+            self.message_user(
+                request, "%s  confirmational emails were generated"
+                % generated_emails)
+            self.message_user(
+                request, "There are %s students with generated confirmational emails"
+                % students_with_emails)
+            self.message_user(
+                request, "%s students still do NOT have confirmational emails"
+                % students_without_emails)
+            return HttpResponseRedirect(request.META["HTTP_REFERER"])
+        else:
+            return HttpResponseForbidden()
+
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = patterns(
+            "",
+            url(r"^generate_slots/$", self.generate_slots, name="generate_slots"),
+            url(r"^generate_interviews/$", self.generate_interviews, name="generate_interviews"),
+            url(r"^generate_emails/$", self.generate_emails, name="generate_emails")
+        )
+        return my_urls + urls
 
     def has_change_permission(self, request, obj=None):
         if obj and request.POST and not request.user.is_superuser:

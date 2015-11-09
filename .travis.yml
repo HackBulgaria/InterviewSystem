@@ -9,6 +9,7 @@ install:
 before_script:
 - psql -c 'CREATE DATABASE testdb;' -U postgres
 script:
+- mv source/interview_communicator/example_local_settings source/interview_communicator/local_settings
 - cd source
 - python manage.py migrate
 - python manage.py test

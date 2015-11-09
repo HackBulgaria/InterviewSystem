@@ -3,7 +3,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '14u_t_2p+*4r6jyj(!zg48h1ifbqga+q0szndh4rx-ce47yhb3'
+SECRET_KEY = '14u_t_2p+*4r6jyj(!zg48h1ifbqga+q00szndh4rx-ce47yhb3'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -16,8 +16,8 @@ ALLOWED_HOSTS = []
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.path.join(BASE_DIR, 'testdb'),
     }
 }
 

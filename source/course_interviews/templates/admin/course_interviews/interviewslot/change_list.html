@@ -1,0 +1,27 @@
+{% extends "admin/change_list.html" %}
+{% block object-tools-items %}
+
+  {% if user.is_superuser %}
+    <span>
+      <a href="{% url 'admin:generate_slots' %}" class="grp-state-focus addlink btn btn-primary">
+        <i class="icon-plus-sign icon-white"></i> Generate slots
+      </a>
+    </span>
+
+    <span>
+      <a href="{% url 'admin:generate_interviews' %}" class="grp-state-focus addlink btn btn-primary">
+        <i class="icon-plus-sign icon-white"></i> Generate interviews
+      </a>
+    </span>
+
+    <span>
+      <a href="{% url 'admin:generate_emails' %}" class="grp-state-focus addlink btn btn-primary">
+        <i class="icon-plus-sign icon-white"></i> Generate emails
+      </a>
+    </span>
+  {% endif %}
+
+  {{ block.super }}
+
+{% endblock %}
+

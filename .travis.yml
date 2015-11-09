@@ -9,6 +9,6 @@ install:
 before_script:
 - psql -c 'CREATE DATABASE testdb;' -U postgres
 script:
-- python source/manage.py migrate
 - cd source
-- manage.py test
+- python manage.py migrate
+- python manage.py test

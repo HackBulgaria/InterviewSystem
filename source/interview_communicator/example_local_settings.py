@@ -15,11 +15,14 @@ ALLOWED_HOSTS = []
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.path.join(BASE_DIR, 'testdb'),
-    }
-}
+       'default': {
+           'ENGINE': 'django.db.backends.postgresql_psycopg2',
+           'NAME': 'testdb',
+           'USER': 'postgres',
+           'HOST': 'localhost',
+           'PORT': '',
+       }
+   }
 
 
 # Static files (CSS, JavaScript, Images)

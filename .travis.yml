@@ -12,6 +12,6 @@ script:
 - mv source/interview_communicator/example_local_settings.py source/interview_communicator/local_settings.py
 - cd source
 - python manage.py migrate
-- coverage run --source='.' python manage.py test
+- coverage run --source='.' manage.py test
 after_success:
 - coveralls --rcfile=.coverage.rc

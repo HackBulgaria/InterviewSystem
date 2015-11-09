@@ -1,3 +1,5 @@
+coverage==3.7.1
+coveralls==0.5
 Django==1.8.5
 django-ckeditor==5.0.2
 django-extensions==1.5.7
@@ -9,3 +11,4 @@ phonenumbers==7.1.0
 requests==2.8.1
 six==1.10.0
 wheel==0.24.0
+psycopg2==2.6.1

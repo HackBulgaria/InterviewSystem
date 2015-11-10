@@ -1,16 +1,12 @@
 from django.core.management.base import BaseCommand
 from course_interviews.helpers.generate_students import GenerateStudents
+from interview_communicator.local_settings import f6s_address, f6s_application_name, f6s_api_key, f6s_page_count, f6s_page
 
 
 class Command(BaseCommand):
     help = 'Generate students(applicants) with finalized forms by making a request to f6s'
 
     def handle(self, **options):
-        f6s_address = "https://api.f6s.com/"
-        f6s_application_name = "hackbulgaria-courses-fall2015"
-        f6s_api_key = "g3WHBM4UYv"
-        f6s_page_count = 100
-        f6s_page = 1
 
         students_generator = GenerateStudents(
             f6s_address, f6s_application_name, f6s_api_key, f6s_page_count, f6s_page)

@@ -325,6 +325,31 @@ class InterviewSlotAdmin(admin.ModelAdmin):
         return
     get_student_course.short_description = "Applying for"
 
+    def get_is_student_accepted(self, obj):
+        if obj.student_id:
+            return obj.student.is_accepted
+        return
+    get_is_student_accepted.short_description = "Is accepted"
+    get_is_student_accepted.boolean = True
+
+    def get_student_code_skills(self, obj):
+        if obj.student_id:
+            return obj.student.code_skills_rating
+        return
+    get_student_code_skills.short_description = "Code skills"
+
+    def get_student_code_design_rating(self, obj):
+        if obj.student_id:
+            return obj.student.code_design_rating
+        return
+    get_student_code_design_rating.short_description = "Design skills"
+
+    def get_student_fit_attitude_rating(self, obj):
+        if obj.student_id:
+            return obj.student.fit_attitude_rating
+        return
+    get_student_fit_attitude_rating.short_description = "Fit rating"
+
     list_display = [
         'get_date',
         'get_start_time',
@@ -335,6 +360,10 @@ class InterviewSlotAdmin(admin.ModelAdmin):
         'get_student_course',
         'get_student_confirmation',
         'get_student_has_been_interviewed',
+        'get_student_code_skills',
+        'get_student_code_design_rating',
+        'get_student_fit_attitude_rating',
+        'get_is_student_accepted',
     ]
     ordering = ['teacher_time_slot__date', 'start_time']
 

@@ -319,6 +319,12 @@ class InterviewSlotAdmin(admin.ModelAdmin):
         return
     get_student_skype.short_description = "Student Skype"
 
+    def get_student_email(self, obj):
+        if obj.student_id:
+            return obj.student.email
+        return
+    get_student_email.short_description = "Student Email"
+
     def get_student_course(self, obj):
         if obj.student_id:
             return obj.student.applied_course
